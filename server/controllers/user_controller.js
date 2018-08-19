@@ -8,14 +8,14 @@ module.exports = {
         ///Assign your dbInstance
         const db = req.app.get('db');
         ///Destrcut your needed valeus from your request bdoy
-        const { email, display_name, name, password, workspaceUrl } = req.body;
+        const { email, username, name, password, workspaceUrl } = req.body;
         //Check if the user got a verification email from workspace url.
         db.get_users_from_workspace(workspaceUrl).then(workspaces => {
             let filteredResult = workspaces[0].users.filter(user => user.email === email);
             if(filteredResult.length) {
                 bcrypt.hash(password, saltRounds).then(hashedPassword => {
                     const newUser = {
-                        display_name,
+                        username,
                         name,
                         password: hashedPassword
                     };
@@ -24,7 +24,7 @@ module.exports = {
                         delete users[0].password;
                         //Assign the user sent from the users[0]ponse to the session
                         req.session.user = users[0];
-                        users.json({user: req.session.user, message: `Registered Successfully ${users[0].display_name}`});
+                        users.json({user: req.session.user, message: `Registered Successfully ${users[0].username}`});
                     }).catch(err => console.log("Register Error-----------", err));
                 }).catch(err => console.log('Hashing Error---------', err));
             //Else if the user is not found send them message telling them to request to join the workspace. 
@@ -36,15 +36,15 @@ module.exports = {
     login: (req, res) => {
         //assign your database instance 
         const db = req.app.get('db');
-        const { display_name, password } = req.body;
+        const { username, password } = req.body;
         //Now we are gonna find the user in the workspace.
-        db.find_user(display_name).then(users => {
+        db.find_user(username).then(users => {
             if(users.length) {
                 bcrypt.compare(password, users[0].password).then(doPasswordMatch => {
                     if(doPasswordMatch) {
                         delete users[0].password;
                         req.session.user = users[0];
-                        res.status(200).json({user: req.session.user, message: `Welcome ${users[0].display_name}!`});
+                        res.status(200).json({user: req.session.user, message: `Welcome ${users[0].username}!`});
                     }
                 }).catch(err => console.log('Compare Error-----------', err));
             }
