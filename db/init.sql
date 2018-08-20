@@ -35,6 +35,13 @@ create table if not exists messages (
     channelId int references channel(id)
 );
 
+create table if not exists codes (
+    id serial primary key,
+    code text,
+    time_sent timestamp,
+    userId int references users(id)
+);
+
 ----- SEssions table 
 CREATE TABLE "session" (
   "sid" varchar NOT NULL COLLATE "default",
