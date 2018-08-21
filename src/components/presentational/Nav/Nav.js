@@ -31,7 +31,7 @@ function Nav(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="title" color="inherit" className={classes.flex}>
-            News
+            DevSlack
           </Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>
