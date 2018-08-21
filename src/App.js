@@ -4,6 +4,8 @@ import RegisterPage from './components/container/RegisterPage/RegisterPage';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import './App.css';
 
+import Nav from './components/presentational/Nav/Nav';
+
 const theme = createMuiTheme({
   overrides: {
     MuiButton: {
@@ -25,6 +27,7 @@ class App extends Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div className="App">
+          <Nav />
           <header>React Message</header>
           <RegisterPage />
         </div>
