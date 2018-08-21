@@ -1,0 +1,10 @@
+.regiser.form {
+    display: grid;
+    grid-template-rows: 10% 10% 10% 10% 10% 10% 10% 10% 20%;
+    height: 100%;
+    width: 100%;
+}
+.regiser.form > * {
+    grid-row: auto;
+
+}

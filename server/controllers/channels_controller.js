@@ -7,7 +7,7 @@ module.exports = {
     },
     createChannel: (req, res) => {
         const db = req.app.get('db');
-        const { name, teamId, public } = req.body;
+        const { name, team_id, public } = req.body;
         const newChannel = { name, teamId, public };
         db.create_channel(newChannel).then(channels => {
             ///Send the channel your creatd and the message, and end response. 

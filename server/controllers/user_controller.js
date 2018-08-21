@@ -1,5 +1,7 @@
 //import brcrypt to hash your passwordds
 const bcrypt = require("bcryptjs");
+//import nodemailer controller for verifying email.
+const nodemailerController = require('./nodemailer_controller');
 module.exports = {
     readUserData: (req, res) => {
         res.json({user: req.session.user});
@@ -8,22 +10,26 @@ module.exports = {
         ///Assign your dbInstance
         const db = req.app.get('db');
         ///Destrcut your needed valeus from your request bdoy
-        const { email, username, name, password, workspaceUrl } = req.body;
+        const { email, username, name, profile_picture, password } = req.body;
         //Check if the user got a verification email from workspace url.
-        db.get_users_from_workspace(workspaceUrl).then(workspaces => {
-            let filteredResult = workspaces[0].users.filter(user => user.email === email);
-            if(filteredResult.length) {
+        // db.get_users_from_workspace(workspaceUrl).then(workspaces => {
+        //     let filteredResult = workspaces[0].users.filter(user => user.email === email);
+        db.find_user(username).then(users => {
+            if(users.length) {
                 bcrypt.hash(password, saltRounds).then(hashedPassword => {
                     const newUser = {
                         username,
+                        email,
                         name,
-                        password: hashedPassword
+                        password: hashedPassword,
+                        profile_picture
                     };
                     db.register(newUser).then(users => {
                         //Delete the password from the user. 
                         delete users[0].password;
                         //Assign the user sent from the users[0]ponse to the session
                         req.session.user = users[0];
+                        nodemailerController.verifyEmail(db, users[0].id, users[0].email);
                         users.json({user: req.session.user, message: `Registered Successfully ${users[0].username}`});
                     }).catch(err => console.log("Register Error-----------", err));
                 }).catch(err => console.log('Hashing Error---------', err));
@@ -31,7 +37,7 @@ module.exports = {
             } else {
                 res.status(404).json({message: "Must request to join workspace first!!"});
             }
-        }).catch(err => console.log('Get workspace url error--------', err));
+        }).catch(err => console.log('Get User url error--------', err));
     },
     login: (req, res) => {
         //assign your database instance 

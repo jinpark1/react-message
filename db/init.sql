@@ -10,6 +10,8 @@ create table if not exists users (
     id serial primary key,
     username text unique,
     email text unique,
+    profile_picture text,
+    phone_number integer,
     password text
 );
 
