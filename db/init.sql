@@ -2,7 +2,9 @@ drop table if exists messages;
 drop table if exists channel;
 drop table if exists member;
 drop table if exists team;
+drop table if exists codes;
 drop table if exists users;
+drop table if exists "session";
 
 create table if not exists users (
     id serial primary key,
@@ -18,31 +20,31 @@ create table if not exists team (
 );
 
 create table if not exists member (
-    teamId int references team(id),
-    userId int references users(id)
+    team_id int references team(id),
+    user_id int references users(id)
 );
 
 create table if not exists channel (
     id serial primary key,
     name text,
-    teamId int references team(id),
+    team_id int references team(id),
     public boolean
 );
 
 create table if not exists messages (
     message text,
-    userId int references users(id),
-    channelId int references channel(id)
+    user_id int references users(id),
+    channel_id int references channel(id)
 );
 
 create table if not exists codes (
     id serial primary key,
     code text,
     time_sent timestamp,
-    userId int references users(id)
+    user_id int references users(id)
 );
 
------ SEssions table 
+----- Sessions table 
 CREATE TABLE "session" (
   "sid" varchar NOT NULL COLLATE "default",
 	"sess" json NOT NULL,
